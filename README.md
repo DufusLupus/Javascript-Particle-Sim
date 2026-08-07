@@ -41,7 +41,7 @@ Design principles:
 `SharedArrayBuffer` requires a cross-origin-isolated context, so the dev server must send COOP/COEP headers. These are configured in `vite.config.ts`.
 
 ```bash
-git clone https://github.com/Killian7575/Javascript-Particle-Sim.git
+git clone https://github.com/DufusLupus/Javascript-Particle-Sim.git
 cd Javascript-Particle-Sim/particle-sim 
 npm install
 npm run dev
