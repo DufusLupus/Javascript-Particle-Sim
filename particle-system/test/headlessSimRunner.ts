@@ -113,7 +113,7 @@ export class SimTester {
         this.probe = undefined;
     }
     private parseProbe(): Run {
-        const [timings, counts] = this.readProbe();
+        const [timings] = this.readProbe();
         const initTimings = timings.get("sim:update:updateParamBuffers");
         const workerTimings = timings.get("sim:update:workers");
         const postWorkerTimings = timings.get("sim:update:referenceCurrentPos");

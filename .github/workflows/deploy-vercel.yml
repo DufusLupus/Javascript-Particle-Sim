@@ -1,0 +1,69 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vercel-${{ github.event_name == 'release' && 'production' || 'preview' }}
+  cancel-in-progress: ${{ github.event_name != 'release' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: particle-system
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Confirm release commit is on main
+        if: github.event_name == 'release'
+        run: git merge-base --is-ancestor HEAD origin/main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: particle-system/package-lock.json
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull preview settings
+        if: github.event_name == 'push'
+        run: vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+
+      - name: Build preview
+        if: github.event_name == 'push'
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy preview
+        if: github.event_name == 'push'
+        run: vercel deploy --prebuilt --token="$VERCEL_TOKEN" | tee "$RUNNER_TEMP/vercel-url.txt"
+
+      - name: Pull production settings
+        if: github.event_name == 'release'
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build production
+        if: github.event_name == 'release'
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy production
+        if: github.event_name == 'release'
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" | tee "$RUNNER_TEMP/vercel-url.txt"
+
+      - name: Report deployment URL
+        run: echo "Deployment URL: $(cat "$RUNNER_TEMP/vercel-url.txt")" >> "$GITHUB_STEP_SUMMARY"
