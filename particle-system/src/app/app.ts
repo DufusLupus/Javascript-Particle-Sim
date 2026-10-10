@@ -4,8 +4,8 @@
 import { Application } from 'pixi.js';
 import { ParticleSimulator } from '../sim/simulation';
 import { Renderer } from '../render/render';
-import { BenchmarkingTool, type SimProbe } from '../../test/benchmark/benchmark';
-import { SimTester } from '../../test/headlessSimRunner'
+import type { BenchmarkingTool, SimProbe } from '../../test/benchmark/benchmark';
+import type { SimTester } from '../../test/headlessSimRunner'
 
 const BENCH_ENABLED = import.meta.env.DEV;
 
@@ -85,6 +85,7 @@ export class AppController {
         this.app.ticker.maxFPS = 60;
 
         if (BENCH_ENABLED) {
+            const { BenchmarkingTool } = await import('../../test/benchmark/benchmark');
             this.bench = new BenchmarkingTool();
             this.probe = this.bench.getProbe;
             // this.simTester = new SimTester()

@@ -106,9 +106,6 @@ class SimWorker {
         const { vel, accum } = computeBuffers
         
         const boundaryMode = liveParams[PARAMS.BOUNDARY]
-        const computeSliceForces = (boundaryMode === MODES.WRAP)
-            ? computeSliceForcesWrap
-            : computeSliceForcesNoWrap;
         if (MODES[spatial.boundaryMode] !== boundaryMode) {
             switch (boundaryMode) {
                 case (MODES.WRAP): {
@@ -135,12 +132,11 @@ class SimWorker {
             dt: liveParams[PARAMS.DT],
             frictionMulti: liveParams[PARAMS.FRICTION],
         }
-        computeSliceForces(
-            computeBuffers,
-            workerRange,
-            world,
-            this.spatial,
-            computeParams)
+        if (boundaryMode === MODES.WRAP) {
+            computeSliceForcesWrap(computeBuffers, workerRange, world, spatial, computeParams);
+        } else {
+            computeSliceForcesNoWrap(computeBuffers, workerRange, spatial, computeParams);
+        }
         integrateSliceForces(
             posBuffers[posRW[POSIDX.READ]],
             posBuffers[posRW[POSIDX.WRITE]],

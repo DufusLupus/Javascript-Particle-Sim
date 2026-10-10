@@ -23,7 +23,6 @@ export interface IntegrateSliceForcesParams {
 export function computeSliceForcesNoWrap(
     buffers: ComputeSliceForcesBuffers,
     slice: [start: number, end: number],
-    world: World,
     spatial: SpatialPartitionClass,
     params: ComputeSliceForcesParams
 ): void {

@@ -1,4 +1,4 @@
-import { BenchmarkingTool } from '../test/benchmark/benchmark.js';
+import type { BenchmarkingTool } from '../test/benchmark/benchmark.js';
 import type { SimTester } from '../test/headlessSimRunner.js';
 import { AppController } from './app/app.js';
 import { mountUI } from './ui/index.js';

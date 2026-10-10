@@ -49,6 +49,18 @@ npm run dev
 
 Requires a browser with `SharedArrayBuffer` and `Atomics.waitAsync` support (recent Chrome/Edge/Firefox/Safari).
 
+## Vercel deployment
+
+Set the Vercel project's Root Directory to `particle-system` and framework preset to Vite. The build command is `npm run build` and the output directory is `dist`. `particle-system/vercel.json` supplies the cross-origin isolation headers required by the simulation and disables Vercel's automatic Git deployments so that `main` does not go straight to production.
+
+Add these GitHub Actions repository secrets:
+
+- `VERCEL_TOKEN`: a Vercel access token with access to this project.
+- `VERCEL_ORG_ID`: the project's Vercel team or personal account ID.
+- `VERCEL_PROJECT_ID`: the Vercel project ID.
+
+The IDs are available in the project's `.vercel/project.json` after linking it with the Vercel CLI, or in the Vercel project settings. The [deployment workflow](.github/workflows/deploy-vercel.yml) creates a Preview deployment for every push to `main` and a Production deployment when a GitHub Release is published. A release tag must point to a commit on `main`. The deployment URL appears in the GitHub Actions job summary.
+
 ## Status & roadmap
 
 Current milestone: `cpu-parallel-v1.1` (tagged) — parallel CPU simulation.
