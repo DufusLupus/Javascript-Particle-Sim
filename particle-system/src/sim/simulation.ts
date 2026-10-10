@@ -6,7 +6,6 @@ import { clamp } from '../core/util.ts';
 // SimProbe is a tiny interface defined in benchmark.ts.
 // In production, app.ts passes nothing; in dev, it passes bench.probe
 import type { SimProbe } from '../../test/benchmark/benchmark.ts';
-const workerUrl = new URL('./workers/worker.js', import.meta.url)
 
 
 export class ParticleSimulator {
@@ -216,7 +215,7 @@ export class ParticleSimulator {
     for (let i = 0; i < size; i++) {
       config.workerInfo.workerId = i;
       config.workerInfo.workerSlice = this.calcWorkerSlice(i, size);
-      const worker: Worker = new Worker(workerUrl, { type: "module" });
+      const worker: Worker = new Worker(new URL('./workers/worker.ts', import.meta.url), { type: "module" });
       worker.onmessage = (e) => {this.onWorkerMessage(e)};
       worker.onerror = (e) => { console.error(e) };
       worker.postMessage(config);
